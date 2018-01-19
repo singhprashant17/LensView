@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LensView">
+        <attr name="highlightColor" format="color"/>
+        <attr name="showTouchSelection" format="boolean"/>
+        <attr name="scaleFactor" format="float"/>
+        <attr name="distortionFactor" format="float"/>
+        <attr name="animationTime" format="integer"/>
+        <attr name="iconSize" format="dimension"/>
+        <attr name="touchSelectionRadius" format="dimension"/>
+    </declare-styleable>
+</resources>
