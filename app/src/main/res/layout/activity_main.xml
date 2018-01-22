@@ -11,10 +11,11 @@
         android:id="@+id/lensView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_red_dark"
+        android:background="@android:color/holo_green_light"
         app:animationTime="100"
         app:distortionFactor="10"
         app:highlightColor="@android:color/holo_orange_light"
+        app:iconSize="20dp"
         app:scaleFactor="2"
         app:showTouchSelection="true"
         app:touchSelectionRadius="20dp"/>

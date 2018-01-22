@@ -31,13 +31,13 @@ public class LensView extends View {
     private Paint mPaintText;
     private float mTouchX = -Float.MAX_VALUE;
     private float mTouchY = -Float.MAX_VALUE;
-    private boolean mInsideRect = false;
+    private boolean mInsideRect;
     private RectF mRectToSelect = new RectF(0, 0, 0, 0);
     private boolean mMustVibrate = true;
     private int mSelectIndex;
-    private ArrayList<App> mApps;
-    private float mAnimationMultiplier = 0.0f;
-    private boolean mAnimationHiding = false;
+    private AdapterClass mApps;
+    private float mAnimationMultiplier;
+    private boolean mAnimationHiding;
     private int mNumberOfCircles;
     private float mTouchSlop;
     private boolean mMoving;
@@ -68,13 +68,13 @@ public class LensView extends View {
         init();
     }
 
-    public void setApps(ArrayList<App> apps) {
+    public void setAdapter(AdapterClass apps) {
         mApps = apps;
         invalidate();
     }
 
     private void init() {
-        mApps = new ArrayList<>();
+        mApps = new AdapterClass(getContext(), new ArrayList<App>());
         setupVariables();
         setupPaints();
     }
@@ -136,7 +136,7 @@ public class LensView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mApps != null) {
-            drawGrid(canvas, mApps.size());
+            drawGrid(canvas, mApps.getCount());
         }
         if (isShowTouchSelection()) {
             drawTouchSelection(canvas);
@@ -220,7 +220,7 @@ public class LensView extends View {
         for (float y = 0.0f; y < (float) grid.getItemCountVertical(); y += 1.0f) {
             for (float x = 0.0f; x < (float) grid.getItemCountHorizontal(); x += 1.0f) {
 
-                int currentItem = (int) (y * ((float) grid.getItemCountHorizontal()) + (x + 1.0f));
+                int currentItem = (int) (y * (float) grid.getItemCountHorizontal() + (x + 1.0f));
                 int currentIndex = currentItem - 1;
 
                 if (currentItem <= grid.getItemCount()) {
@@ -272,11 +272,7 @@ public class LensView extends View {
         }
 
         if (selectIndex >= 0) {
-            if (selectIndex != mSelectIndex) {
-                mMustVibrate = true;
-            } else {
-                mMustVibrate = false;
-            }
+            mMustVibrate = selectIndex != mSelectIndex;
         } else {
             mMustVibrate = false;
         }
@@ -293,8 +289,8 @@ public class LensView extends View {
     }
 
     private void drawAppIcon(Canvas canvas, RectF rect, int index) {
-        if (index < mApps.size()) {
-            Bitmap appIcon = mApps.get(index).getIcon();
+        if (index < mApps.getCount()) {
+            Bitmap appIcon = mApps.getBitmap(index);
             Rect src = new Rect(0, 0, appIcon.getWidth(), appIcon.getHeight());
             canvas.drawBitmap(appIcon, src, rect, mPaintIcons);
         }
@@ -302,7 +298,7 @@ public class LensView extends View {
 
     private void drawAppName(Canvas canvas, RectF rect) {
         if (showNameAppHover() && mMoving) {
-            canvas.drawText(mApps.get(mSelectIndex).toString(),
+            canvas.drawText(mApps.getItem(mSelectIndex).toString(),
                     rect.centerX(),
                     rect.top - getResources().getDimension(R.dimen.margin_lens_text),
                     mPaintText);
@@ -416,7 +412,7 @@ public class LensView extends View {
     @SuppressWarnings("NumericCastThatLosesPrecision")
     private class LensAnimation extends Animation {
 
-        private boolean mShow;
+        private final boolean mShow;
 
         public LensAnimation(boolean show) {
             mShow = show;
